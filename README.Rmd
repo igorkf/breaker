@@ -2,8 +2,12 @@
 output: github_document
 ---
 
+```{r, message=F, warning=F, include=F}
+knitr::opts_chunk$set(fig.width = 11, collapse = T, comment = "#>", fig.path = "README-", warning = F, message = F)
+```
+
 # breaker
-This package contains functions to work with different line break options.
+This package contains functions to work with different break line options.
 For now, I only wrote a function: `nbreak()`.   
 
 ### nbreak
@@ -15,17 +19,20 @@ devtools::install_github("igorkf/breaker")
 library(breaker)
 ```
 
+### Settings
+We're setting `fig.width` only to show wider plots in this document.
+```{r}
+knitr::opts_chunk$set(fig.width = 11)
+library(tidyverse)
+```
+
 ### Usage
 ```{r}
-knitr::opts_chunk$set(fig.width = 11, collapse = T, comment = "#>")
-library(tidyverse)
-
 nbreak(string = "I want to break lines until the end of this sentence, every 3 lines", n = 3, loop = T) %>% cat()
 nbreak(string = "I don't like to jump too much!", n = 3, loop = F) %>% cat()
 ```
-Note that we're setting `fig.width = 11` to show longer plots.
 
-The function simply adds `\n` between the words:
+The function simply adds `\n` among the words:
 ```{r}
 nbreak(string = "I want to break lines until the end of this sentence, every 3 lines", n = 3, loop = T)
 ```
@@ -35,11 +42,13 @@ Note that `loop = TRUE` by default.
 ### An example
 ```{r}
 tibble(a1 = sample(c("I don't know", "Right", "Wrong"), size = 30, replace = T, prob = c(0.4, 0.3, 0.3))) %>% 
-ggplot(aes(x = a1, fill = a1)) +
-geom_bar() +
-labs(title = "Thats a title!") +
-theme_bw() +
-theme(legend.position = "none")
+  ggplot(aes(x = a1, fill = a1)) +
+    geom_bar(aes(y = (..count..)/sum(..count..))) +
+    coord_cartesian(ylim = c(0, 0.5)) +
+    ylab("") +
+    labs(title = "Thats a title!") +
+    theme(legend.position = "none",
+          title = element_text(size = 10))
 ```
 That's seems good, right? But if you wanted to do it for a lot of plots that have big texts?
 
@@ -56,21 +65,22 @@ titles <- c("1- Disrespect the traffic signs, going beyond when the traffic ligh
 
 tab <- tibble(a1 = sample(c("I only drive my bicycle (and I'm afraid of)", "Right", "Wrong"), size = 30,
                           replace = T, prob = c(0.4, 0.3, 0.3)),
-a2 = sample(c("Find the owner", "I would take all the money and don't tell anybody"), size = 30,
-            replace = T, prob = c(0.7, 0.3)),
-a3 = sample(c("Wrong", "Right", "I really don't know"), size = 30,
-            replace = T, prob = c(0.3, 0.3, 0.4)))
+              a2 = sample(c("Find the owner", "I would take all the money and don't tell anybody"), size = 30,
+                          replace = T, prob = c(0.7, 0.3)),
+              a3 = sample(c("Wrong", "Right", "I really don't know"), size = 30,
+                          replace = T, prob = c(0.3, 0.3, 0.4)))
 
 ans <- tab %>% colnames()
 
 #ans is getting into x and titles into y:
 map2(ans, titles,
     ~ggplot(tab, aes(x = !!sym(.x), fill = !!sym(.x))) +
-      geom_bar() +
-      labs(title = .y) +
-      theme_bw() +
-      theme(legend.position = "none",
-      title = element_text(size = 10))) %>% 
+        geom_bar(aes(y = (..count..)/sum(..count..))) +
+        coord_cartesian(ylim = c(0, 0.8)) +
+        ylab("") +
+        labs(title = .y) +
+        theme(legend.position = "none",
+              title = element_text(size = 10))) %>% 
 cowplot::plot_grid(plotlist = ., ncol = 3)
 ```
 Look up this mess!
@@ -83,13 +93,14 @@ data %>%
   mutate_all(. %>% map_chr(., ~nbreak(.x, n = 3))) %>% 
   as.data.frame() %>% 
   ggplot(aes(x = !!sym(x), fill = !!sym(x))) +
-    geom_bar() +
+    geom_bar(aes(y = (..count..)/sum(..count..))) +
     labs(title = nbreak(string = y, n = 6)) +
-    theme_bw() +
     theme(legend.position = "none",
-    title = element_text(size = 10))
+          title = element_text(size = 10))
 }
 
 map2(ans, titles, ~gg(tab, .x, .y)) %>% 
   cowplot::plot_grid(plotlist = ., ncol = 3)
 ```
+
+Feel free to improve!

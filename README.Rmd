@@ -85,7 +85,6 @@ cowplot::plot_grid(plotlist = ., ncol = 3)
 ```
 Look up this mess!
 
-
 We can make a function (just to be easier to put in map2) and fix it up:
 ```{r, fig.width = 11}
 gg <- function(data, x, y){

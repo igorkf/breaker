@@ -94,6 +94,8 @@ data %>%
   as.data.frame() %>% 
   ggplot(aes(x = !!sym(x), fill = !!sym(x))) +
     geom_bar(aes(y = (..count..)/sum(..count..))) +
+    coord_cartesian(ylim = c(0, 0.8)) +
+    ylab("") +
     labs(title = nbreak(string = y, n = 6)) +
     theme(legend.position = "none",
           title = element_text(size = 10))

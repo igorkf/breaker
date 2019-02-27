@@ -27,12 +27,12 @@ library(tidyverse)
 ### Usage
 
 ``` r
-nbreak(string = "I want to break lines until the end of this sentence, every 3 lines", n = 3, loop = T) %>% cat()
+nbreak(string = "I want to break lines until the end of this sentence, every 3 words", n = 3) %>% cat()
 #> I want to
 #> break lines until
 #> the end of
 #> this sentence, every
-#> 3 lines
+#> 3 words
 nbreak(string = "I don't like to jump too much!", n = 3, loop = F) %>% cat()
 #> I don't like
 #> to jump too much!
@@ -41,8 +41,8 @@ nbreak(string = "I don't like to jump too much!", n = 3, loop = F) %>% cat()
 The function simply adds `\n` among the words:
 
 ``` r
-nbreak(string = "I want to break lines until the end of this sentence, every 3 lines", n = 3, loop = T)
-#> [1] "I want to\nbreak lines until\nthe end of\nthis sentence, every\n3 lines"
+nbreak(string = "I want to break lines until the end of this sentence, every 3 words", n = 3)
+#> [1] "I want to\nbreak lines until\nthe end of\nthis sentence, every\n3 words"
 ```
 
 If your word is not a multiple from the `n` argument, there's no problem. The function will run until the end of the sentence. Note that `loop = TRUE` by default.
